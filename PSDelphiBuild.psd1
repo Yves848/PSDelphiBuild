@@ -69,7 +69,9 @@ PowerShellVersion = '7.0'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @('Get-ProjectList')
+FunctionsToExport = @('Get-ProjectList',
+                      'Build-SearchPath',
+                      'Get-DelphiEnv')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -110,7 +112,7 @@ PrivateData = @{
         IconUri = 'https://raw.githubusercontent.com/Yves848/PSDelphiBuild/master/PSDelphiBuild.ico'
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'https://github.com/Yves848/delphibuild/blob/0.9.8-(scoop-integration)/readme.md'
+        ReleaseNotes = 'https://github.com/Yves848/PSDelphiBuild/blob/master/readme.md'
 
         
         # Prerelease string of this module

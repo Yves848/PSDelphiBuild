@@ -1,14 +1,13 @@
 ﻿using namespace System.Management.Automation
 
-class ValidFilesGenerator : IValidateSetValuesGenerator {
-  [string[]] GetValidValues() {
-      $Values = Get-ChildItem -Path * -Filter *.dproj -Recurse | where-object {($_.FullName -cmatch "Composants") -eq $false} | Select-Object {$_.BaseName}
-      return $Values
-  }
-}
+# class ValidFilesGenerator : IValidateSetValuesGenerator {
+#   [string[]] GetValidValues() {
+#       $Values = Get-ChildItem -Path * -Filter *.dproj -Recurse | where-object {($_.FullName -cmatch "Composants") -eq $false} | Select-Object {$_.BaseName}
+#       return $Values
+#   }
+# }
 
 param(
-  [ValidateSet(ValidFilesGenerator)]
   [string]$Projet,
   [switch]$Verbose,
   [string]$SVN,
@@ -28,7 +27,7 @@ if (([string]$env:USERNAME).ToLower().Contains("jenkins")) {
   <#
      Passage de paramètres pour gradle
   #>
-  $env:BDS = $env:BDS = `""C:\Program Files (x86)\Embarcadero\RAD Studio\7.0`""
+  $env:BDS = `""C:\Program Files (x86)\Embarcadero\RAD Studio\7.0`""
   $env:BDSCOMMONDIR = "$($BDSCOMMONDIR)"
   $env:SVN = "$($SVN)"
   $env:COMMIT = "$($SVN)"
@@ -84,6 +83,7 @@ $searchPath += "$($env:COMP)\Librairies\jwa\Win32API"
 $searchPath += "$($env:COMP)\Librairies\Imaging"
 $searchPath += "$($env:COMP)\Librairies\Imaging\JpegLib"
 $searchPath += "$($env:COMP)\Librairies\Imaging\Zlib"
+$searchPath | ConvertTo-Json | Out-File -FilePath "searchpath.json" 
 $env:DCC_UnitSearchPath = $searchPath -join ";"
 <#
   Indiquer l'emblacement du framework .Net spécifique à notre MSBuild.

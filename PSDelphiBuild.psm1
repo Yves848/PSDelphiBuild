@@ -10,8 +10,15 @@ $include = [System.IO.Path]::GetDirectoryName($myInvocation.MyCommand.Definition
 
 . "$include\visuals.ps1"
 
-function Get-ProjectList {
-  $Values = Get-ChildItem -Path * -Filter *.dproj -Recurse | Where-Object { ($_.FullName -cmatch "Composants") -eq $false }
+function Get-ProjectList(
+  [switch]$Groups
+) {
+  if ($Groups) {
+    $filter = "*.groupproj"
+  } else {
+    $filter = "*.dproj"
+  }
+  $Values = Get-ChildItem -Path * -Filter $filter -Recurse | Where-Object { ($_.FullName -cmatch "Composants") -eq $false }
   return $Values
 }
 
@@ -57,7 +64,6 @@ function Build-DelphiEnv(
       $path = $_ -creplace "@SET", ""
       $var, $value = $path -split "="
       [Environment]::SetEnvironmentVariable($var, $value)
-      # Write-Host "$var => $value"
     }
   }
 }

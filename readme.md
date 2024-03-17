@@ -16,11 +16,19 @@ Get-ProjectList -Groups
 ```
 ---
 ### Get-DelphiEnv -Delphi [Delphi2010,Delphi11,Delphi12]
+Usage
 ```
 Get-DelphiEnv -Delphi Delphi2010
 ```
 ---
 ### Build-SearchPath
+Usage
 ```
 Build-SearchPath
+```
+---
+### Show-ProjectList [-Groups]
+Usage
+```
+Show-ProjectList
 ```

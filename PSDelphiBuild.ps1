@@ -11,6 +11,7 @@ class delphiProject {
   [boolean]$Selected
   [string]$Name
   [string]$path
+  [string]$FullName
   [Boolean]$group
   [boolean]$checked
 }
@@ -54,6 +55,7 @@ function DisplayGrid(
   [ref]$data
 
 ) {
+  [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 
   if ($iscoreclr) {
     $esc = "`e"
   }
@@ -369,7 +371,8 @@ function Show-ProjectList(
   Get-ProjectList -path "C:\Git\commit_legacy\*" | ForEach-Object {
     [delphiProject]$dp = [delphiProject]::new()
     $dp.Name = $_.BaseName
-    $dp.path = $_.GetDirectoryName
+    $dp.path = $_.DirectoryName
+    $dp.FullName = $_.FullName
     $dp.checked = $false
     $dp.Selected = $false
     $dp.group = $false

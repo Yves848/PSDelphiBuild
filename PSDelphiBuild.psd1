@@ -101,13 +101,13 @@ PrivateData = @{
         Tags = @('Delphi','helper','powershell', 'TUI')
 
         # A URL to the license for this module.
-        LicenseUri = 'https://github.com/Yves848/delphibuild/blob/master/licence.txt'
+        LicenseUri = 'https://github.com/Yves848/PSDelphiBuild/blob/master/License.txt'
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/Yves848/delphibuild/tree/0.9.8-(scoop-integration)'
+        ProjectUri = 'https://github.com/Yves848/PSDelphiBuild/tree/master'
 
         # A URL to an icon representing this module.
-        IconUri = 'https://raw.githubusercontent.com/Yves848/delphibuild/master/Winget-posh/wingetposh2.ico'
+        IconUri = 'https://raw.githubusercontent.com/Yves848/PSDelphiBuild/master/PSDelphiBuild.ico'
 
         # ReleaseNotes of this module
         ReleaseNotes = 'https://github.com/Yves848/delphibuild/blob/0.9.8-(scoop-integration)/readme.md'

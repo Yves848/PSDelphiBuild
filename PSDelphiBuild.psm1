@@ -31,6 +31,23 @@ function Get-ProjectList(
   return $Values
 }
 
+function makeBlanks {
+  param(
+    $nblines,
+    $win
+  )
+  if ($iscoreclr) {
+    $esc = "`e"
+  }
+  else {
+    $esc = $([char]0x1b)
+  }
+  $blanks = 1..$nblines | ForEach-Object {
+    "$esc[38;5;15m$($Single.LEFT)", "".PadRight($Win.W - 2, " "), "$esc[38;5;15m$($Single.RIGHT)" -join ""
+  }
+  $blanks | Out-String
+}
+
 function Show-ProjectList(
   [switch]$Groups
 ) {

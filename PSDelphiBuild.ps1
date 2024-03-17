@@ -49,8 +49,10 @@ function makeBlanks {
   $blanks | Out-String
 }
 
-function Show-ProjectList(
-  [switch]$Groups
+function DisplayGrid(
+  $list,
+  [ref]$data
+
 ) {
   if ($iscoreclr) {
     $esc = "`e"
@@ -127,18 +129,6 @@ function Show-ProjectList(
     }
     
     "$esc[38;5;15m$($Single.LEFT)$($line)$esc[0m"
-  }
-
-  [delphiProject[]]$list = @()
-
-  Get-ProjectList -path "C:\Git\commit_legacy\*" | ForEach-Object {
-    [delphiProject]$dp = [delphiProject]::new()
-    $dp.Name = $_.BaseName
-    $dp.path = $_.GetDirectoryName
-    $dp.checked = $false
-    $dp.Selected = $false
-    $dp.group = $false
-    $list += $dp
   }
 
   $WinWidth = [System.Console]::WindowWidth
@@ -367,6 +357,30 @@ function Show-ProjectList(
   }
   [System.Console]::CursorVisible = $true
   Clear-Host
+}
+
+function Show-ProjectList(
+  [switch]$Groups
+) {
+  
+
+  [delphiProject[]]$list = @()
+
+  Get-ProjectList -path "C:\Git\commit_legacy\*" | ForEach-Object {
+    [delphiProject]$dp = [delphiProject]::new()
+    $dp.Name = $_.BaseName
+    $dp.path = $_.GetDirectoryName
+    $dp.checked = $false
+    $dp.Selected = $false
+    $dp.group = $false
+    $list += $dp
+  }
+  $data = @()
+  displayGrid -list $list -data ([ref]$data) 
+
+   if ($data.length -gt 0) {
+    $data
+   }
 }
 
 function Build-SearchPath (

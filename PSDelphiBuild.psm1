@@ -11,26 +11,28 @@ class delphiProject {
   [boolean]$Selected
   [string]$Name
   [string]$path
+  [string]$FullName
   [Boolean]$group
   [boolean]$checked
 }
-
 $include = [System.IO.Path]::GetDirectoryName($myInvocation.MyCommand.Definition) 
 
 . "$include\visuals.ps1"
 
 function Get-ProjectList(
-  [switch]$Groups
+  [switch]$Groups,
+  [string]$path = "*"
 ) {
   if ($Groups) {
     $filter = "*.groupproj"
-  } else {
+  }
+  else {
     $filter = "*.dproj"
   }
-  $Values = Get-ChildItem -Path * -Filter $filter -Recurse | Where-Object { ($_.FullName -cmatch "Composants") -eq $false }
+
+  $Values = Get-ChildItem -Path $path -Filter $filter -Recurse | Where-Object { ($_.FullName -cmatch "Composants") -eq $false }
   return $Values
 }
-
 function makeBlanks {
   param(
     $nblines,
@@ -48,9 +50,12 @@ function makeBlanks {
   $blanks | Out-String
 }
 
-function Show-ProjectList(
-  [switch]$Groups
+function DisplayGrid(
+  $list,
+  [ref]$data
+
 ) {
+  [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 
   if ($iscoreclr) {
     $esc = "`e"
   }
@@ -126,18 +131,6 @@ function Show-ProjectList(
     }
     
     "$esc[38;5;15m$($Single.LEFT)$($line)$esc[0m"
-  }
-
-  [delphiProject[]]$list = @()
-
-  Get-ProjectList -path "C:\Git\commit_legacy\*" | ForEach-Object {
-    [delphiProject]$dp = [delphiProject]::new()
-    $dp.Name = $_.BaseName
-    $dp.path = $_.GetDirectoryName
-    $dp.checked = $false
-    $dp.Selected = $false
-    $dp.group = $false
-    $list += $dp
   }
 
   $WinWidth = [System.Console]::WindowWidth
@@ -368,6 +361,75 @@ function Show-ProjectList(
   Clear-Host
 }
 
+function Build-Project(
+  [string]$comp
+) {
+  $global:LASTEXITCODE = 0
+  ${env: BDSCOMMONDIR}
+  Write-Host ">>> Build Project"
+  Write-Host "  >>> `$comp : $($comp)"
+  if (Test-Path -Path $comp) {
+    $project = $(Split-Path $comp -Leaf).PadLeft(25, " ")
+    $log = Invoke-Expression "msbuild `"$($comp)`" /p:config=Release"
+  
+    if ($LASTEXITCODE -eq 0) {
+      Write-Host "Build of $($project) Successfull"
+    }
+    else {
+      Write-Host "Build of $($project) Failed"
+      $log | Out-File -FilePath $global:logfile -Append
+      Write-Host "      >>> Project $project not built"
+      Write-Host "      >>> Details in $logfile"
+      Exit 5
+    }
+  }
+  else {
+    Write-Host "      >>> ERROR.  $($comp) not found"
+    Write-Host "      >>> Project $project not built"
+    EXIT 10
+  }
+}
+
+function Build-Selection(
+  [delphiProject[]]$data
+) {
+  $datelog = Get-Date -UFormat "%Y-%m-%d_%H-%M"
+  $global:logfile = "log_$($datelog)"
+
+  Get-DelphiEnv -Delphi Delphi2010
+  
+  $data | ForEach-Object {
+    Build-Project $_.FullName
+  }
+
+}
+
+function Show-ProjectList(
+  [switch]$Groups
+) {
+  
+
+  [delphiProject[]]$list = @()
+
+  Get-ProjectList -path "C:\Git\commit_legacy\*" | ForEach-Object {
+    [delphiProject]$dp = [delphiProject]::new()
+    $dp.Name = $_.BaseName
+    $dp.path = $_.DirectoryName
+    $dp.FullName = $_.FullName
+    $dp.checked = $false
+    $dp.Selected = $false
+    $dp.group = $false
+    $list += $dp
+  }
+  $data = @()
+  displayGrid -list $list -data ([ref]$data) 
+
+   if ($data.length -gt 0) {
+      Build-Selection  $data
+   }
+}
+
+
 function Build-SearchPath (
 ) {
   $UnitSearch = Get-Content -Path "$($include)\\searchpath.json" | Out-String | ConvertFrom-Json
@@ -409,8 +471,13 @@ function Build-DelphiEnv(
     if ($_.trim() -ne "") {
       $path = $_ -creplace "@SET", ""
       $var, $value = $path -split "="
-      ##Write-Host "$var => $value"
-      [Environment]::SetEnvironmentVariable($var, $value)
+      Write-Host "$var => $value"
+      [Environment]::SetEnvironmentVariable($var.trim(), $value)
     }
+  }
+  $path = [regex]::Escape($env:FrameworkDir)
+  if (-not ($arrPath -match $env:FrameworkVersion)) {
+    $arrPath = $env:Path -split ';'
+    $env:Path = ($arrPath + $env:FrameworkDir) -join ';'
   }
 }

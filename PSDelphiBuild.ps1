@@ -361,6 +361,49 @@ function DisplayGrid(
   Clear-Host
 }
 
+function Build-Project(
+  [string]$comp
+) {
+  $global:LASTEXITCODE = 0
+  ${env: BDSCOMMONDIR}
+  Write-Host ">>> Build Project"
+  Write-Host "  >>> `$comp : $($comp)"
+  if (Test-Path -Path $comp) {
+    $project = $(Split-Path $comp -Leaf).PadLeft(25, " ")
+    $log = Invoke-Expression "msbuild `"$($comp)`" /p:config=Release"
+  
+    if ($LASTEXITCODE -eq 0) {
+      Write-Host "Build of $($project) Successfull"
+    }
+    else {
+      Write-Host "Build of $($project) Failed"
+      $log | Out-File -FilePath $global:logfile -Append
+      Write-Host "      >>> Project $project not built"
+      Write-Host "      >>> Details in $logfile"
+      Exit 5
+    }
+  }
+  else {
+    Write-Host "      >>> ERROR.  $($comp) not found"
+    Write-Host "      >>> Project $project not built"
+    EXIT 10
+  }
+}
+
+function Build-Selection(
+  [delphiProject[]]$data
+) {
+  $datelog = Get-Date -UFormat "%Y-%m-%d_%H-%M"
+  $global:logfile = "log_$($datelog)"
+
+  Get-DelphiEnv -Delphi Delphi2010
+  
+  $data | ForEach-Object {
+    Build-Project $_.FullName
+  }
+
+}
+
 function Show-ProjectList(
   [switch]$Groups
 ) {
@@ -382,9 +425,10 @@ function Show-ProjectList(
   displayGrid -list $list -data ([ref]$data) 
 
    if ($data.length -gt 0) {
-    $data
+      Build-Selection  $data
    }
 }
+
 
 function Build-SearchPath (
 ) {
@@ -427,9 +471,14 @@ function Build-DelphiEnv(
     if ($_.trim() -ne "") {
       $path = $_ -creplace "@SET", ""
       $var, $value = $path -split "="
-      ##Write-Host "$var => $value"
-      [Environment]::SetEnvironmentVariable($var, $value)
+      Write-Host "$var => $value"
+      [Environment]::SetEnvironmentVariable($var.trim(), $value)
     }
+  }
+  $path = [regex]::Escape($env:FrameworkDir)
+  if (-not ($arrPath -match $env:FrameworkVersion)) {
+    $arrPath = $env:Path -split ';'
+    $env:Path = ($arrPath + $env:FrameworkDir) -join ';'
   }
 }
 

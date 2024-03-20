@@ -432,7 +432,8 @@ function Show-ProjectList(
 
 function Build-SearchPath (
 ) {
-  $UnitSearch = Get-Content -Path "$($include)\\searchpath.json" | Out-String | ConvertFrom-Json
+  $path = Get-Location 
+  $UnitSearch = Get-Content -Path "$($path.path)\\searchpath.json" | Out-String | ConvertFrom-Json
   $searchPath = @()
   $UnitSearch | ForEach-Object {
     $searchPath += $_
@@ -447,6 +448,9 @@ function Get-DelphiEnv(
   switch ($Delphi) {
     'Delphi2010' {  
       $dpath = "C:\Program Files (x86)\Embarcadero\RAD Studio\7.0"
+      $env:SVN = "$(Get-Location)"
+      $env:COMMIT = "$($env:SVN)"
+      $env:COMP = "$($env:SVN)\composants"
     }
     'Delphi11' {  
       $dpath = "C:\Program Files (x86)\Embarcadero\Studio\22.0"

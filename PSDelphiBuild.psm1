@@ -99,7 +99,7 @@ function DisplayGrid(
     $update = "↺ "
     $delete = "Ⅹ "
     
-    $line = $list.Name.PadRight($totalAvailableSpace," ")
+    $line = $list.Name.PadRight($totalAvailableSpace, " ")
 
     if ($deleted -or $Updated -or $checked) {
       if ($deleted) {
@@ -365,7 +365,6 @@ function Build-Project(
   [string]$comp
 ) {
   $global:LASTEXITCODE = 0
-  ${env: BDSCOMMONDIR}
   Write-Host ">>> Build Project"
   Write-Host "  >>> `$comp : $($comp)"
   if (Test-Path -Path $comp) {
@@ -395,9 +394,11 @@ function Build-Selection(
 ) {
   $datelog = Get-Date -UFormat "%Y-%m-%d_%H-%M"
   $global:logfile = "log_$($datelog)"
-
-  Get-DelphiEnv -Delphi Delphi2010
   
+  Get-DelphiEnv -Delphi Delphi2010
+  Build-SearchPath
+  Write-Host "DCC_UnitSearchPath => $env:DCC_UnitSearchPath"
+
   $data | ForEach-Object {
     Build-Project $_.FullName
   }
@@ -408,7 +409,6 @@ function Show-ProjectList(
   [switch]$Groups
 ) {
   
-
   [delphiProject[]]$list = @()
 
   Get-ProjectList -path "C:\Git\commit_legacy\*" | ForEach-Object {
@@ -424,9 +424,9 @@ function Show-ProjectList(
   $data = @()
   displayGrid -list $list -data ([ref]$data) 
 
-   if ($data.length -gt 0) {
-      Build-Selection  $data
-   }
+  if ($data.length -gt 0) {
+    Build-Selection  $data
+  }
 }
 
 
@@ -471,8 +471,10 @@ function Build-DelphiEnv(
     if ($_.trim() -ne "") {
       $path = $_ -creplace "@SET", ""
       $var, $value = $path -split "="
-      Write-Host "$var => $value"
-      [Environment]::SetEnvironmentVariable($var.trim(), $value)
+      if ($var.trim() -cne 'PATH') {
+        Write-Host "$var => $value"
+        [Environment]::SetEnvironmentVariable($var.trim(), $value.trim())
+      }
     }
   }
   $path = [regex]::Escape($env:FrameworkDir)

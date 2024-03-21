@@ -397,7 +397,7 @@ function Build-Selection(
   
   Get-DelphiEnv -Delphi Delphi2010
   Build-SearchPath
-  Write-Host "DCC_UnitSearchPath => $env:DCC_UnitSearchPath"
+  #Write-Host "DCC_UnitSearchPath => $env:DCC_UnitSearchPath"
 
   $data | ForEach-Object {
     Build-Project $_.FullName
@@ -433,12 +433,19 @@ function Show-ProjectList(
 function Build-SearchPath (
 ) {
   $path = Get-Location 
-  $UnitSearch = Get-Content -Path "$($path.path)\\searchpath.json" | Out-String | ConvertFrom-Json
+  $UnitSearch = Get-Content -Path "$($path.path)\\buildconfig.json" | Out-String | ConvertFrom-Json
   $searchPath = @()
   $UnitSearch | ForEach-Object {
     $searchPath += $_
   }
   [Environment]::SetEnvironmentVariable("DCC_UnitSearchPath", $searchPath -join ";")
+  if($UnitSearch.SVN -eq '.') {
+    $env:SVN = "$(Get-Location)"
+  } else {
+    $env.SNV = $UnitSearch.SVN
+  }
+  $env:COMMIT = "$($env:SVN)"
+  $env:COMP = "$($env:SVN)\composants"
 }
 
 function Get-DelphiEnv(
@@ -448,9 +455,6 @@ function Get-DelphiEnv(
   switch ($Delphi) {
     'Delphi2010' {  
       $dpath = "C:\Program Files (x86)\Embarcadero\RAD Studio\7.0"
-      $env:SVN = "$(Get-Location)"
-      $env:COMMIT = "$($env:SVN)"
-      $env:COMP = "$($env:SVN)\composants"
     }
     'Delphi11' {  
       $dpath = "C:\Program Files (x86)\Embarcadero\Studio\22.0"

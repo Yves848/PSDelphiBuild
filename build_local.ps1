@@ -83,7 +83,7 @@ $searchPath += "$($env:COMP)\Librairies\jwa\Win32API"
 $searchPath += "$($env:COMP)\Librairies\Imaging"
 $searchPath += "$($env:COMP)\Librairies\Imaging\JpegLib"
 $searchPath += "$($env:COMP)\Librairies\Imaging\Zlib"
-$searchPath | ConvertTo-Json | Out-File -FilePath "searchpath.json" 
+#$searchPath | ConvertTo-Json | Out-File -FilePath "searchpath.json" 
 $env:DCC_UnitSearchPath = $searchPath -join ";"
 <#
   Indiquer l'emblacement du framework .Net spécifique à notre MSBuild.

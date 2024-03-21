@@ -1,0 +1,33 @@
+{
+  
+  "DCC_UnitSearchPath": [
+    "C:\\Program Files (x86)\\Devart\\ODAC for RAD Studio 2010\\Bin",
+    "C:\\Program Files (x86)\\Devart\\ODAC for RAD Studio 2010\\Lib",
+    "C:\\Program Files (x86)\\Embarcadero\\RAD Studio\\7.0\\Imports",
+    "C:\\Program Files (x86)\\Embarcadero\\RAD Studio\\7.0\\include",
+    "C:\\Program Files (x86)\\Embarcadero\\RAD Studio\\7.0\\lib",
+    "C:\\Program Files (x86)\\Embarcadero\\RAD Studio\\7.0\\Lib\\Indy10",
+    "C:\\Git\\commit_legacy\\bin",
+    "C:\\Git\\commit_legacy\\composants\\Autres\\PerlRegex",
+    "C:\\Git\\commit_legacy\\composants\\zlib",
+    "C:\\Git\\commit_legacy\\Lib",
+    "C:\\Git\\commit_legacy\\composants\\AccesBD\\DISQLite\\D2010",
+    "C:\\Git\\commit_legacy\\composants\\Bin",
+    "C:\\Git\\commit_legacy\\composants\\Lib",
+    "C:\\Git\\commit_legacy\\composants\\Librairies\\jcl\\lib\\d14",
+    "C:\\Git\\commit_legacy\\composants\\Librairies\\jcl\\source\\include",
+    "C:\\Git\\commit_legacy\\composants\\Librairies\\jvcl\\common",
+    "C:\\Git\\commit_legacy\\composants\\Librairies\\jvcl\\lib\\D14",
+    "C:\\Git\\commit_legacy\\composants\\Librairies\\jvcl\\Resources",
+    "C:\\Git\\commit_legacy\\composants\\Librairies\\jwa\\Common",
+    "C:\\Git\\commit_legacy\\composants\\Librairies\\jwa\\Includes",
+    "C:\\Git\\commit_legacy\\composants\\Librairies\\jwa\\Packages\\bds10",
+    "C:\\Git\\commit_legacy\\composants\\pi\\PIClasses",
+    "C:\\Git\\commit_legacy\\composants\\pi\\PIDB",
+    "C:\\Git\\commit_legacy\\composants\\pi\\PILGPI",
+    "C:\\Git\\commit_legacy\\composants\\Librairies\\jwa\\Win32API",
+    "C:\\Git\\commit_legacy\\composants\\Librairies\\Imaging",
+    "C:\\Git\\commit_legacy\\composants\\Librairies\\Imaging\\JpegLib",
+    "C:\\Git\\commit_legacy\\composants\\Librairies\\Imaging\\Zlib"
+  ]
+}

@@ -24,7 +24,7 @@ function Get-ProjectList(
   [string]$path = "*"
 ) {
   if ($Groups) {
-    $filter = "*.groupproj"
+    $filter = "*.*proj"
   }
   else {
     $filter = "*.dproj"
@@ -411,7 +411,7 @@ function Show-ProjectList(
   
   [delphiProject[]]$list = @()
 
-  Get-ProjectList -path "C:\Git\commit_legacy\*" | ForEach-Object {
+  Get-ProjectList -path "C:\Git\commit_legacy\*" -Groups $Groups | ForEach-Object {
     [delphiProject]$dp = [delphiProject]::new()
     $dp.Name = $_.BaseName
     $dp.path = $_.DirectoryName
